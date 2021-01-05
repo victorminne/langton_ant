@@ -26,3 +26,18 @@ class Ants():
 			return self._color
 		else :
 			return 'white'
+
+	def set_coordonate(self, x, y):
+		self._coordonate = [x, y]
+
+	def direction_take(self):
+		return self._current_direction
+
+	def get_color(self):
+		return self._color
+
+	def get_coordonate(self):
+		return [self._coordonate[0],self._coordonate[1]]
+
+	def __del__(self):
+		print("bye")
