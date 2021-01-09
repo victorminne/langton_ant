@@ -237,6 +237,5 @@ class Board_steps():#here x = row and y = column
 		number_of_cell = self._column**2 - total
 		return number_of_ant, number_of_cell
 
-
 	def __del__(self):
 		print("bye")
