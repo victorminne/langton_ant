@@ -3,7 +3,7 @@ import time
 from tkinter import messagebox
 from Simulator import Simulation_wind
 from Ant import Ants,New_Ants
-
+#care python is case sensitiv
 
 class Board_multiple_ants():#here x = row and y = column
 

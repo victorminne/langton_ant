@@ -1,4 +1,6 @@
 import random
+#care python is case sensitiv
+
 class Ants():
 
 	direction = ["N","E","S","W"]

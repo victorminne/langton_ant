@@ -1,4 +1,6 @@
 from tkinter import *
+#care python is case sensitiv
+
 
 class Simulation_wind():
 
