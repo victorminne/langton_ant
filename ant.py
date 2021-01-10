@@ -2,36 +2,53 @@ import random
 class Ants():
 
 	direction = ["N","E","S","W"]
+	color = ["white","black","blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
-	def __init__(self, row, column, color):
+	def __init__(self, row, column, rules):
 		min_row, min_column = round(0.4*row), round(0.4*column)
 		max_row, max_column = round(0.6*row), round(0.6*column)
 		self._coordonate = [random.randint(min_row,max_row),random.randint(min_column,max_column)]
 		self._orientation = 0
 		self._current_direction = self.direction[self._orientation]
-		self._color = color
+		self.rules = {}
+		for i in range(len(rules)):
+			self.rules[self.color[i]] = rules[i]
 
 	def change_direction(self, color_of_the_case):
-		#white go to the rigth but not white go to the left
-		self._orientation += 1 if color_of_the_case == "white" else -1 #if it's white then +1 else -1
+
+		orientaion_modificator = self.rules.get(color_of_the_case)
+		if orientaion_modificator == "R":
+			self._orientation += 1
+		elif orientaion_modificator == "L":
+			self._orientation -= 1
+		elif orientaion_modificator == "B":
+			self._orientation += 2
+
 
 		self.update()
 
-		if color_of_the_case == "white":
-			return self._color
-		else :
-			return 'white'
+		index_color = self.color.index(color_of_the_case)+1
+		if index_color == len(self.rules):
+			index_color = 0
+
+		return self.color[index_color]
 
 	def bchange_direction(self, color_of_the_case):
-		#white go to the rigth but not white go to the left
-		self._orientation += -1 if color_of_the_case == "white" else 1 #if it's white then -1 else +1
+		index_color = self.color.index(color_of_the_case)-1
+		if index_color == -1:
+			index_color = len(self.rules)-1
+
+		orientaion_modificator = self.rules.get(self.color[index_color])
+		if orientaion_modificator == "R":
+			self._orientation -= 1
+		elif orientaion_modificator == "L":
+			self._orientation += 1
+		elif orientaion_modificator == "B":
+			self._orientation += 2
 
 		self.update()
 
-		if color_of_the_case == "white":
-			return 'white'
-		else :
-			return self._color
+		return self.color[index_color]
 
 	def update(self):
 		if self._orientation < 0:
@@ -46,9 +63,6 @@ class Ants():
 
 	def direction_take(self):
 		return self._current_direction
-
-	def get_color(self):
-		return self._color
 
 	def get_coordonate(self):
 		return [self._coordonate[0],self._coordonate[1]]
@@ -59,42 +73,51 @@ class Ants():
 class New_Ants():
 
 	direction = ["N","E","S","W"]
+	color = ["white","black","blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
-	def __init__(self, row, column, color):
+	def __init__(self, row, column, rules):
 		self._coordonate = [row,column]
 		self._orientation = 0
 		self._current_direction = self.direction[self._orientation]
-		self._color = color
+		self.rules = {}
+		for i in range(len(rules)):
+			self.rules[self.color[i]] = rules[i]
 
 	def change_direction(self, color_of_the_case):
-		#white go to the rigth but not white go to the left
-		self._orientation += 1 if color_of_the_case == "white" else -1 #if it's white then +1 else -1
+
+		orientaion_modificator = self.rules.get(color_of_the_case)
+		if orientaion_modificator == "R":
+			self._orientation += 1
+		elif orientaion_modificator == "L":
+			self._orientation -= 1
+		elif orientaion_modificator == "B":
+			self._orientation += 2
+
 
 		self.update()
 
-		if color_of_the_case == "white":
-			return self._color
-		else :
-			return 'white'
+		index_color = self.color.index(color_of_the_case)+1
+		if index_color == len(self.rules):
+			index_color = 0
+
+		return self.color[index_color]
 
 	def bchange_direction(self, color_of_the_case):
-		#white go to the rigth but not white go to the left
-		self._orientation += -1 if color_of_the_case == "white" else 1 #if it's white then -1 else +1
+		index_color = self.color.index(color_of_the_case)-1
+		if index_color == -1:
+			index_color = len(self.rules)-1
+
+		orientaion_modificator = self.rules.get(self.color[index_color])
+		if orientaion_modificator == "R":
+			self._orientation -= 1
+		elif orientaion_modificator == "L":
+			self._orientation += 1
+		elif orientaion_modificator == "B":
+			self._orientation += 2
 
 		self.update()
 
-		if color_of_the_case == "white":
-			return 'white'
-		else :
-			return self._color
-
-	def update(self):
-		if self._orientation < 0:
-			self._orientation += 4
-		elif self._orientation >3:
-			self._orientation -= 4
-
-		self._current_direction = self.direction[self._orientation]
+		return self.color[index_color]
 
 	def update(self):
 		if self._orientation < 0:
@@ -109,9 +132,6 @@ class New_Ants():
 
 	def direction_take(self):
 		return self._current_direction
-
-	def get_color(self):
-		return self._color
 
 	def get_coordonate(self):
 		return [self._coordonate[0],self._coordonate[1]]
