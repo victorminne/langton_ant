@@ -9,7 +9,8 @@ class Board_multiple_ants():#here x = row and y = column
 
 	color = ["blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
-	def __init__(self, border, indice=int, row=int, column=int, percentage=int, number_of_ant=int, speed=0.1):
+	def __init__(self, rules, border, indice=int, row=int, column=int, percentage=int, number_of_ant=int, speed=0.1):
+		self.rules = rules
 		self._step = 0
 		self._indice = indice
 		self._speed = speed
@@ -34,7 +35,7 @@ class Board_multiple_ants():#here x = row and y = column
 			self._ants.append("")
 
 		for i in range(len(self._ants)):
-			self._ants[i] = Ants(row, column, self.color[i])
+			self._ants[i] = Ants(row, column, self.rules)
 
 		#initilisation of the window which display the langton's ant(s)
 		self._window_of_game = Simulation_wind(row, column, border)
@@ -70,14 +71,8 @@ class Board_multiple_ants():#here x = row and y = column
 
 	def move(self, current_ant):
 		coordonate = current_ant.get_coordonate()
-		color = current_ant.get_color()		
-				
-		if self._board[coordonate[0]][coordonate[1]] == "white":
-			color_of_the_case = "white" 
-		else:
-			color_of_the_case = "not white"
-		
-		self._board[coordonate[0]][coordonate[1]] = current_ant.change_direction(color_of_the_case)
+
+		self._board[coordonate[0]][coordonate[1]] = current_ant.change_direction(self._board[coordonate[0]][coordonate[1]])
 		self._window_of_game.draw(coordonate[0] , coordonate[1], self._board[coordonate[0]][coordonate[1]])
 		
 		x, y = self.direction_to_number(current_ant.direction_take())
@@ -111,9 +106,8 @@ class Board_multiple_ants():#here x = row and y = column
 
 class Board_steps():#here x = row and y = column
 
-	color = ["blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
-
-	def __init__(self, row=int, column=int, percentage=int, number_of_ant=int):
+	def __init__(self, rules, row=int, column=int, percentage=int, number_of_ant=int):
+		self.rules = rules
 		self._percentage = percentage
 		self._number_of_ant = number_of_ant
 		self._step = 0
@@ -139,7 +133,7 @@ class Board_steps():#here x = row and y = column
 			self._ants.append("")
 
 		for i in range(len(self._ants)):
-			self._ants[i] = Ants(row, column, self.color[i])
+			self._ants[i] = Ants(row, column, self.rules)
 
 	def returnn(self):
 		coordonate_ants = []
@@ -169,15 +163,9 @@ class Board_steps():#here x = row and y = column
 				self._step -= 1
 
 	def move(self, current_ant):
-		coordonate = current_ant.get_coordonate()
-		color = current_ant.get_color()		
-				
-		if self._board[coordonate[0]][coordonate[1]] == "white":
-			color_of_the_case = "white" 
-		else:
-			color_of_the_case = "not white"
-		
-		self._board[coordonate[0]][coordonate[1]] = current_ant.change_direction(color_of_the_case)
+		coordonate = current_ant.get_coordonate()	
+
+		self._board[coordonate[0]][coordonate[1]] = current_ant.change_direction(self._board[coordonate[0]][coordonate[1]])
 		
 		x, y = self.direction_to_number(current_ant.direction_take())
 		if self.condition(coordonate, x, y):
@@ -188,19 +176,14 @@ class Board_steps():#here x = row and y = column
 
 	def bmove(self, current_ant):
 		coordonate = current_ant.get_coordonate()
-		color = current_ant.get_color()	
 
 		x, y = self.bdirection_to_number(current_ant.direction_take())
 		if self.condition(coordonate, x, y):
 			return True
 
+		self._board[coordonate[0]+x][coordonate[1]+y] = current_ant.bchange_direction(self._board[coordonate[0]+x][coordonate[1]+y])
 		current_ant.set_coordonate(coordonate[0] + x, coordonate[1] + y)
-		if self._board[coordonate[0]+x][coordonate[1]+y] == "white":
-			color_of_the_case = "not white" 
-		else:
-			color_of_the_case = "white"
-		
-		self._board[coordonate[0]+x][coordonate[1]+y] = current_ant.bchange_direction(color_of_the_case)
+		return False
 
 	def direction_to_number(self, direction):
 		if direction == "N":
@@ -230,16 +213,9 @@ class Board_steps():#here x = row and y = column
 			self._test = False
 			return True
 
-	def maximum(self):
-		if len(self._ants) >= 10:
-			return False
-		else:
-			return True
-
 	def create_new_ant(self, row, column):
-		color = len(self._ants)
 		self._ants.append("")
-		self._ants[color] = New_Ants(row, column, self.color[color])
+		self._ants[-1] = New_Ants(row, column, self.rules)
 
 	def clear(self):
 		self._step = 0
@@ -261,7 +237,7 @@ class Board_steps():#here x = row and y = column
 			self._ants.append("")
 
 		for i in range(len(self._ants)):
-			self._ants[i] = Ants(self._row, self._column, self.color[i])
+			self._ants[i] = Ants(self._row, self._column, self.rules)
 
 	def info(self):
 		number_of_ant = len(self._ants)

@@ -1,8 +1,11 @@
+import threading
+import time
+
 from tkinter import *
 from tkinter.ttk import Labelframe,OptionMenu
 from tkinter import ttk
-import threading
-import time
+from tkinter import messagebox
+
 
 from Board import Board_multiple_ants
 from Simulator2 import Simulator_steps
@@ -10,12 +13,13 @@ from Simulator2 import Simulator_steps
 
 class Parameters_wind(object):#Here y= row and x = column
 	def __init__(self, master):
+		self._rules = "RL"
 		self._Game = []
 		self._indice = 0
 		frame = Frame(master)
 		frame.grid()
 		tabControl = ttk.Notebook(master)
-		tabControl.configure(width= 420, height= 465)
+		tabControl.configure(width= 420, height= 600)
 
 		self.main_tab = ttk.Frame(tabControl)
 		tabControl.add(self.main_tab, text= "Settings")
@@ -65,12 +69,28 @@ class Parameters_wind(object):#Here y= row and x = column
 		self.black_case_label.grid(column = 0, row = 6, sticky = 'w')
 		self.black_case = Scale(self.main_tab, orient = 'horizontal', from_ = 0, to = 99, variable = self.black_case_nbr, tickinterval = 10, length = 200)
 		self.black_case.grid(column = 0, row = 7, padx = 5, pady = 5)
+
+		self.frame_rules = Labelframe(self.main_tab, text = "Rules setting:", height = 100, width = 400)
+		self.frame_rules.grid(column = 0, row =8, sticky = 'w')
+		self.label_rules = Label(self.frame_rules, text = "Rules :" + str(self._rules))
+		self.label_rules.grid(column = 0, row = 0, sticky = 'w', columnspan = 3)
+		self.button_F = Button(self.frame_rules, text = "F", command = self.F)
+		self.button_F.grid(column = 1 , row = 1, padx = 5, pady = 5)
+		self.button_L = Button(self.frame_rules, text = "L", command = self.L)
+		self.button_L.grid(column = 0 , row = 2, padx = 5, pady = 5)
+		self.button_clean = Button(self.frame_rules, text = "Clean", command = self.clean)
+		self.button_clean.grid(column = 1 , row = 2, padx = 5, pady = 5)
+		self.button_R = Button(self.frame_rules, text = "R", command = self.R)
+		self.button_R.grid(column = 2 , row = 2, padx = 5, pady = 5)
+		self.button_B = Button(self.frame_rules, text = "B", command = self.B)
+		self.button_B.grid(column = 1 , row = 3, padx = 5, pady = 5)
+
 		self.chk = Checkbutton(self.main_tab, text='Grid', var=self.chkValue) 
-		self.chk.grid(column=0, row=8)
+		self.chk.grid(column=0, row=9)
 		self.button_simulator = Button(self.main_tab, text = "Go to simulation auto", command = self.simulation_ants)
-		self.button_simulator.grid(column = 0 , row = 9)
+		self.button_simulator.grid(column = 0 , row = 10)
 		self.button_simulator_steps = Button(self.main_tab, text = "Go to simulation step by step", command = self.simulation_steps)
-		self.button_simulator_steps.grid(column = 1 , row = 9, pady = 15)
+		self.button_simulator_steps.grid(column = 1 , row = 10, pady = 15)
 
 
 	def about_page(self):
@@ -93,7 +113,40 @@ class Parameters_wind(object):#Here y= row and x = column
 				self.about_label.grid(column = 0, row = self.ligne, sticky = 'w')
 				self.ligne += 1
 
+	def F(self):
+		if len(self._rules) < 12:
+			self._rules += "F"
+		else:
+			messagebox.showinfo("Info", "You arrive to maximum rules")
+		self.actu_rules()
 
+	def L(self):
+		if len(self._rules) < 12:
+			self._rules += "L"
+		else:
+			messagebox.showinfo("Info", "You arrive to maximum rules")
+		self.actu_rules()
+
+	def R(self):
+		if len(self._rules) < 12:
+			self._rules += "R"
+		else:
+			messagebox.showinfo("Info", "You arrive to maximum rules")
+		self.actu_rules()
+
+	def B(self):
+		if len(self._rules) < 12:
+			self._rules += "B"
+		else:
+			messagebox.showinfo("Info", "You arrive to maximum rules")
+		self.actu_rules()
+
+	def clean(self):
+		self._rules = ""
+		self.actu_rules()
+
+	def actu_rules(self):
+		self.label_rules.config(text = "Rules :" + str(self._rules))
 
 	def simulation_ants(self):
 		threading._start_new_thread(self.new_board,())
@@ -108,7 +161,10 @@ class Parameters_wind(object):#Here y= row and x = column
 		speed = int(self.speed.get())/1000
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
-		self._Game[self._indice] = Board_multiple_ants(border, self._indice, row, column, percentage, number_of_ant, speed)
+		if len(self._rules) > 0:
+			self._Game[self._indice] = Board_multiple_ants(self._rules, border, self._indice, row, column, percentage, number_of_ant, speed)
+		else:
+			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
 
 	def simulation_steps(self):
 		threading._start_new_thread(self.new_board_steps,())
@@ -122,4 +178,7 @@ class Parameters_wind(object):#Here y= row and x = column
 		number_of_ant = self.nbr_of_ant.get()
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
-		self._Game[self._indice] = Simulator_steps(self._indice, row, column, percentage, number_of_ant, border)
+		if len(self._rules) > 0:
+			self._Game[self._indice] = Simulator_steps(self._rules, self._indice, row, column, percentage, number_of_ant, border)
+		else:
+			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")

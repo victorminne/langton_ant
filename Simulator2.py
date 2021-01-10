@@ -5,7 +5,8 @@ from tkinter import messagebox
 
 class Simulator_steps():
 
-	def __init__(self, indice, row, col, percentage, number_of_ant,border):
+	def __init__(self, rules, indice, row, col, percentage, number_of_ant,border):
+		self.rules = rules
 		self.label_one_var = StringVar()
 		self.label_two_var = StringVar()
 		self.col = col
@@ -16,7 +17,7 @@ class Simulator_steps():
 		self._win_ant.geometry("1000x800")
 		self._win_ant.resizable(False, True)
 		self._screen_size = 800
-		self._game = Board_steps(row, col, percentage, number_of_ant)
+		self._game = Board_steps(rules, row, col, percentage, number_of_ant)
 		self._board_real, self.coordonate_of_ants, self._steps = self._game.returnn()
 		number_of_ant, number_of_cell = self._game.info()
 		self.dimension = IntVar()
@@ -105,35 +106,30 @@ class Simulator_steps():
 		self.actu_info()
 
 	def mouseClick(self,event):
-		if self._game.maximum():
+		tempo_x = -1
+		tempo_y = -1
+		for x in range(self.col):
+			if (x*self._px)<event.x<=(x*self._px+self._px):
+				tempo_y = x
+				break
 
-			tempo_x = -1
-			tempo_y = -1
-			for x in range(self.col):
-				if (x*self._px)<event.x<=(x*self._px+self._px):
-					tempo_y = x
-					break
+		for y in range(self.col):
+			if (y*self._px)<event.y<=(y*self._px+self._px):
+				tempo_x = y
+				break
 
-			for y in range(self.col):
-				if (y*self._px)<event.y<=(y*self._px+self._px):
-					tempo_x = y
-					break
+		if tempo_y != -1 and tempo_x != -1:
+			self._game.create_new_ant(tempo_x,tempo_y)
 
-			if tempo_y != -1 and tempo_x != -1:
-				self._game.create_new_ant(tempo_x,tempo_y)
+		self._board_real, self.coordonate_of_ants, self._steps = self._game.returnn()
 
-			self._board_real, self.coordonate_of_ants, self._steps = self._game.returnn()
+		for i in range(len(self._board_real)):
+			for j in range(len(self._board_real[0])):
+				k = self._board_real[i][j]
+				self._monCanvas.itemconfig(self._board[i][j], fill=k)
 
-			for i in range(len(self._board_real)):
-				for j in range(len(self._board_real[0])):
-					k = self._board_real[i][j]
-					self._monCanvas.itemconfig(self._board[i][j], fill=k)
-
-			for i in range(len(self.coordonate_of_ants)):
-				self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
-
-		else:
-			messagebox.showinfo("Info", "You can't add more ants")
+		for i in range(len(self.coordonate_of_ants)):
+			self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
 
 		self.actu_info()
 
