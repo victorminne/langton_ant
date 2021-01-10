@@ -160,6 +160,14 @@ class Board_steps():#here x = row and y = column
 						self._testt = True
 				self._step += 1
 
+	def bplay(self,steps):
+		for i in range(steps):
+			if self._testt == False:
+				for i in self._ants[::-1]:
+					if self.bmove(i):
+						self._testt = True
+				self._step -= 1
+
 	def move(self, current_ant):
 		coordonate = current_ant.get_coordonate()
 		color = current_ant.get_color()		
@@ -178,6 +186,22 @@ class Board_steps():#here x = row and y = column
 		current_ant.set_coordonate(coordonate[0] + x, coordonate[1] + y)
 		return False
 
+	def bmove(self, current_ant):
+		coordonate = current_ant.get_coordonate()
+		color = current_ant.get_color()	
+
+		x, y = self.bdirection_to_number(current_ant.direction_take())
+		if self.condition(coordonate, x, y):
+			return True
+
+		current_ant.set_coordonate(coordonate[0] + x, coordonate[1] + y)
+		if self._board[coordonate[0]+x][coordonate[1]+y] == "white":
+			color_of_the_case = "not white" 
+		else:
+			color_of_the_case = "white"
+		
+		self._board[coordonate[0]+x][coordonate[1]+y] = current_ant.bchange_direction(color_of_the_case)
+
 	def direction_to_number(self, direction):
 		if direction == "N":
 			return -1, 0
@@ -187,6 +211,16 @@ class Board_steps():#here x = row and y = column
 			return 1, 0
 		elif direction == "W":
 			return 0, -1
+
+	def bdirection_to_number(self, direction):
+		if direction == "N":
+			return 1, 0
+		elif direction == "E":
+			return 0, -1
+		elif direction == "S":
+			return -1, 0
+		elif direction == "W":
+			return 0, 1
 			
 	def condition(self,coordonate=list, x=int, y=int):
 		if coordonate[0] + x >= self._row or coordonate[1] + y >= self._column:

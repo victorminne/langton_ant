@@ -6,6 +6,8 @@ from tkinter import messagebox
 class Simulator_steps():
 
 	def __init__(self, indice, row, col, percentage, number_of_ant,border):
+		self.label_one_var = StringVar()
+		self.label_two_var = StringVar()
 		self.col = col
 		self._win_ant = Tk()
 		self._steps = 0
@@ -60,14 +62,16 @@ class Simulator_steps():
 		self.scale_dimension.grid(column = 0, row = 0, padx = 5, pady = 5)
 		self.button_simulator_steps = Button(self._frame_button, text = "Go forward", command = self.steps)
 		self.button_simulator_steps.grid(column = 0 , row = 1, pady = 15)
-		self.button_simulator_steps = Button(self._frame_button, text = "Clear", command = self.clear)
+		self.button_simulator_steps = Button(self._frame_button, text = "Go backward", command = self.bsteps)
 		self.button_simulator_steps.grid(column = 0 , row = 2, pady = 15)
+		self.button_simulator_steps = Button(self._frame_button, text = "Clear", command = self.clear)
+		self.button_simulator_steps.grid(column = 0 , row = 3, pady = 15)
 		self._monCanvas.bind("<ButtonPress-1>", self.mouseClick)
 		self._frame_info = Labelframe(self._win_ant, text = "Info :", height = 60, width = 300)
 		self._frame_info.grid(column = 5, row = 1, sticky = 'w')
-		self.label_one = Label(self._frame_info, text = f"Number of cell(s): {number_of_cell}")
+		self.label_one = Label(self._frame_info, text = "Number of cell(s): " + str(number_of_cell))
 		self.label_one.grid(column = 0, row = 0, sticky = 'w')
-		self.label_two = Label(self._frame_info, text = f"Number of ant(s): {number_of_ant}")
+		self.label_two = Label(self._frame_info, text = "Number of cell(s): " + str(number_of_ant))
 		self.label_two.grid(column = 0, row = 1, sticky = 'w')
 
 		self._win_ant.mainloop()
@@ -75,6 +79,14 @@ class Simulator_steps():
 	def steps(self):
 		x = self.scale_dimension.get()
 		self._game.play(x)
+		self.actu()
+
+	def bsteps(self):
+		x = self.scale_dimension.get()
+		self._game.bplay(x)
+		self.actu()
+
+	def actu(self):
 		self._board_real, self.coordonate_of_ants, self._steps = self._game.returnn()
 
 		for i in range(len(self._board_real)):
@@ -86,15 +98,11 @@ class Simulator_steps():
 			self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
 
 		if self.coordonate_of_ants[0][1]:
-			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation can't go further")
+			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go either further or go back any further")
 
 
 		self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
-		number_of_ant, number_of_cell = self._game.info()
-		self.label_one = Label(self._frame_info, text = f"Number of cell(s): {number_of_cell}")
-		self.label_one.grid(column = 0, row = 0, sticky = 'w')
-		self.label_two = Label(self._frame_info, text = f"Number of ant(s): {number_of_ant}")
-		self.label_two.grid(column = 0, row = 1, sticky = 'w')
+		self.actu_info()
 
 	def mouseClick(self,event):
 		if self._game.maximum():
@@ -123,8 +131,11 @@ class Simulator_steps():
 
 			for i in range(len(self.coordonate_of_ants)):
 				self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
+
 		else:
 			messagebox.showinfo("Info", "You can't add more ants")
+
+		self.actu_info()
 
 	def clear(self):
 		self._game.clear()
@@ -138,8 +149,9 @@ class Simulator_steps():
 		for i in range(len(self.coordonate_of_ants)):
 			self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
 
+		self.actu_info()
+
+	def actu_info(self):
 		number_of_ant, number_of_cell = self._game.info()
-		self.label_one = Label(self._frame_info, text = f"Number of cell(s): {number_of_cell}")
-		self.label_one.grid(column = 0, row = 0, sticky = 'w')
-		self.label_two = Label(self._frame_info, text = f"Number of ant(s): {number_of_ant}")
-		self.label_two.grid(column = 0, row = 1, sticky = 'w')
+		self.label_one.config(text = "Number of cell(s): " + str(number_of_cell))
+		self.label_two.config(text = "Number of ant(s): " + str(number_of_ant))
