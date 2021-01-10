@@ -3,15 +3,26 @@ from tkinter.ttk import Labelframe,OptionMenu
 from tkinter import ttk
 import threading
 import time
+import subprocess
+import sys
 
 from Board import Board_multiple_ants
 from Simulator2 import Simulator_steps
 
+try:
+	from ttkthemes import ThemedStyle
+except ImportError:
+	subprocess.check_call([sys.executable, "-m", "pip", "install", 'git+https://github.com/RedFantom/ttkthemes'])
+finally:
+	from ttkthemes import ThemedStyle
 
 class Parameters_wind(object):#Here y= row and x = column
 	def __init__(self, master):
 		self._Game = []
 		self._indice = 0
+		self._style = ThemedStyle(master)
+		self._style.set_theme('equilux')
+
 		frame = Frame(master)
 		frame.grid()
 		tabControl = ttk.Notebook(master)
@@ -23,6 +34,10 @@ class Parameters_wind(object):#Here y= row and x = column
 
 		self.about_tab = ttk.Frame(tabControl)
 		tabControl.add(self.about_tab, text = "About")
+		tabControl.grid()
+
+		self.theme_tab = ttk.Frame(tabControl)
+		tabControl.add(self.theme_tab, text = "Theme")
 		tabControl.grid()
 
 		self.dimension = IntVar()
@@ -38,6 +53,7 @@ class Parameters_wind(object):#Here y= row and x = column
 		
 		self.about_page()
 		self.main_page()
+		self.theme_page()
 
 	def main_page(self):
 
@@ -93,7 +109,17 @@ class Parameters_wind(object):#Here y= row and x = column
 				self.about_label.grid(column = 0, row = self.ligne, sticky = 'w')
 				self.ligne += 1
 
+	def theme_page(self):
+		self.button_theme_dark = Button(self.theme_tab, text = "Dark theme", command = self.theme_dark)
+		self.button_theme_dark.grid(column = 0, row = 0)
+		self.button_theme_light = Button(self.theme_tab, text = "light theme", command = self.theme_light)
+		self.button_theme_light.grid(column = 0, row = 1)
 
+	def theme_dark(self):
+		self._style.set_theme('equilux')
+
+	def theme_light(self):
+		self._style.set_theme('arc')
 
 	def simulation_ants(self):
 		threading._start_new_thread(self.new_board,())
