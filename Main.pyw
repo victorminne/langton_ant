@@ -12,5 +12,5 @@ if __name__ == "__main__" :
 	icon = PhotoImage(file='icon.png')
 	root.iconphoto(False, icon)
 	Parameters_wind(root)
-	messagebox.showinfo("Info", "The simulation ends ONLY if an ant tries to get out of the frame. Big Brother watching you...")
+	messagebox.showinfo("Info", "The simulation ends, if an ant tries to get out of the frame. Remind this : 'change the future, change the past'. Big Brother watching you...")
 	root.mainloop()

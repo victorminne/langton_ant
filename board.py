@@ -9,7 +9,8 @@ class Board_multiple_ants():#here x = row and y = column
 
 	color = ["blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
-	def __init__(self, rules, border, indice=int, row=int, column=int, percentage=int, number_of_ant=int, speed=0.1):
+	def __init__(self, collision, rules, border, indice=int, row=int, column=int, percentage=int, number_of_ant=int, speed=0.1):
+		self._collision = collision
 		self.rules = rules
 		self._step = 0
 		self._indice = indice
@@ -63,11 +64,51 @@ class Board_multiple_ants():#here x = row and y = column
 	def play(self):
 		while self._test:
 			for i in self._ants:
-				self.move(i)
+				if i.alive():
+					self.move(i)
+				else:
+					if i.resucite(self._step+1):
+						self.move(i)
+
+			if self._collision:
+				self.collisionf()
+				self.actu_ant()
+				if not self.one_alive():
+					break
 			time.sleep(self._speed)
 			self._step += 1
 			self._window_of_game.refresh(self._indice, self._step)
 		self.finished()
+
+	def one_alive(self):
+		count = 0
+		for i in self._ants:
+			if i.alive():
+				count += 1
+
+		if count == 0:
+			return False
+		else:
+			return True
+
+	def actu_ant(self):
+		for i in self._ants:
+			if not i.alive():
+				coo = i.get_coordonate()
+				self._window_of_game.draw(coo[0] , coo[1], self._board[coo[0]][coo[1]])
+
+	def collisionf(self):
+		if len(self._ants)>1:
+			for i in range(len(self._ants)):
+				if not self._ants[i].alive():
+					continue
+				coo_ant_one = self._ants[i].get_coordonate()
+				for j in range(1,len(self._ants)-i):
+					if self._ants[-j].alive():
+						if coo_ant_one == self._ants[-j].get_coordonate():
+							self._ants[i].dead(self._step)
+							self._ants[-j].dead(self._step)
+							break
 
 	def move(self, current_ant):
 		coordonate = current_ant.get_coordonate()
@@ -106,7 +147,8 @@ class Board_multiple_ants():#here x = row and y = column
 
 class Board_steps():#here x = row and y = column
 
-	def __init__(self, rules, row=int, column=int, percentage=int, number_of_ant=int):
+	def __init__(self,collision, rules, row=int, column=int, percentage=int, number_of_ant=int):
+		self._collision = collision
 		self.rules = rules
 		self._percentage = percentage
 		self._number_of_ant = number_of_ant
@@ -138,10 +180,16 @@ class Board_steps():#here x = row and y = column
 	def returnn(self):
 		coordonate_ants = []
 		for i in self._ants:
-			ants = []
-			ants.append(i.get_coordonate())
-			ants.append(self._testt)
-			coordonate_ants.append(ants)
+			if not i.alive():
+				ants = []
+				ants.append([-1,-1])
+				ants.append(self._testt)
+				coordonate_ants.append(ants)
+			else:
+				ants = []
+				ants.append(i.get_coordonate())
+				ants.append(self._testt)
+				coordonate_ants.append(ants)
 
 		return self._board, coordonate_ants, self._step
 
@@ -150,17 +198,48 @@ class Board_steps():#here x = row and y = column
 		for i in range(steps):
 			if self._testt == False:
 				for i in self._ants:
-					if self.move(i):
-						self._testt = True
+					if i.alive():
+						if self.move(i):
+							self._testt = True
+					else:
+						if i.resucite(self._step+1):
+							if self.move(i):
+								self._testt = True
+
+				if self._collision:
+					self.collisionf()
+
 				self._step += 1
 
 	def bplay(self,steps):
 		for i in range(steps):
 			if self._testt == False:
 				for i in self._ants[::-1]:
-					if self.bmove(i):
-						self._testt = True
+					if i.alive():
+						if self.bmove(i):
+							self._testt = True
+					else:
+						if i.resucite(self._step-1):
+							if self.bmove(i):
+								self._testt = True
+
+				if self._collision:
+					self.collisionf()
+
 				self._step -= 1
+
+	def collisionf(self):
+		if len(self._ants)>1:
+			for i in range(len(self._ants)):
+				if not self._ants[i].alive():
+					continue
+				coo_ant_one = self._ants[i].get_coordonate()
+				for j in range(1,len(self._ants)-i):
+					if self._ants[-j].alive():
+						if coo_ant_one == self._ants[-j].get_coordonate():
+							self._ants[i].dead(self._step)
+							self._ants[-j].dead(self._step)
+							break
 
 	def move(self, current_ant):
 		coordonate = current_ant.get_coordonate()	
@@ -215,7 +294,7 @@ class Board_steps():#here x = row and y = column
 
 	def create_new_ant(self, row, column):
 		self._ants.append("")
-		self._ants[-1] = New_Ants(row, column, self.rules)
+		self._ants[-1] = New_Ants(row, column, self.rules, self._step)
 
 	def clear(self):
 		self._step = 0
@@ -240,7 +319,11 @@ class Board_steps():#here x = row and y = column
 			self._ants[i] = Ants(self._row, self._column, self.rules)
 
 	def info(self):
-		number_of_ant = len(self._ants)
+		count = 0
+		for i in self._ants:
+			if i.alive():
+				count += 1
+		number_of_ant = [len(self._ants)-count,count]
 		total = 0
 		for i in range(len(self._board)):
 			total += self._board[i].count("white")

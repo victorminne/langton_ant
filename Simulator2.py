@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 class Simulator_steps():
 
-	def __init__(self, rules, indice, row, col, percentage, number_of_ant,border):
+	def __init__(self, collision, rules, indice, row, col, percentage, number_of_ant,border):
 		self.rules = rules
 		self.label_one_var = StringVar()
 		self.label_two_var = StringVar()
@@ -13,11 +13,11 @@ class Simulator_steps():
 		self._win_ant = Tk()
 		self._steps = 0
 		self.indice = indice
-		self._win_ant.title(f"Langton's ant simulation {indice} steps {self._steps}")
+		self._win_ant.title(f"Langton's ant simulation {indice} step {self._steps}")
 		self._win_ant.geometry("1000x800")
 		self._win_ant.resizable(False, True)
 		self._screen_size = 800
-		self._game = Board_steps(rules, row, col, percentage, number_of_ant)
+		self._game = Board_steps(collision, rules, row, col, percentage, number_of_ant)
 		self._board_real, self.coordonate_of_ants, self._steps = self._game.returnn()
 		number_of_ant, number_of_cell = self._game.info()
 		self.dimension = IntVar()
@@ -70,11 +70,28 @@ class Simulator_steps():
 		self._monCanvas.bind("<ButtonPress-1>", self.mouseClick)
 		self._frame_info = Labelframe(self._win_ant, text = "Info :", height = 60, width = 300)
 		self._frame_info.grid(column = 5, row = 1, sticky = 'w')
-		self.label_one = Label(self._frame_info, text = "Number of cell(s): " + str(number_of_cell))
-		self.label_one.grid(column = 0, row = 0, sticky = 'w')
-		self.label_two = Label(self._frame_info, text = "Number of cell(s): " + str(number_of_ant))
-		self.label_two.grid(column = 0, row = 1, sticky = 'w')
+		if number_of_cell == 0 or number_of_cell == 1:
+			self.label_one = Label(self._frame_info, text = "Number of cell: " + str(number_of_cell))
+			self.label_one.grid(column = 0, row = 0, sticky = 'w')
+		else:
+			self.label_one = Label(self._frame_info, text = "Number of cells: " + str(number_of_cell))
+			self.label_one.grid(column = 0, row = 0, sticky = 'w')
+		
+		if number_of_ant[1] == 0 or number_of_ant[1] == 1:
+			self.label_two = Label(self._frame_info, text = "Number of ant alive: " + str(number_of_ant[1]))
+			self.label_two.grid(column = 0, row = 1, sticky = 'w')
+		else:
+			self.label_two = Label(self._frame_info, text = "Number of ants alive: " + str(number_of_ant[1]))
+			self.label_two.grid(column = 0, row = 1, sticky = 'w')
 
+		if number_of_ant[0] == 0 or number_of_ant[0] == 1:
+			self.label_three = Label(self._frame_info, text = "Number of ant dead: " + str(number_of_ant[0]))
+			self.label_three.grid(column = 0, row = 2, sticky = 'w')
+		else:
+			self.label_three = Label(self._frame_info, text = "Number of ants dead: " + str(number_of_ant[0]))
+			self.label_three.grid(column = 0, row = 2, sticky = 'w')
+
+		
 		self._win_ant.mainloop()
 
 	def steps(self):
@@ -96,13 +113,17 @@ class Simulator_steps():
 				self._monCanvas.itemconfig(self._board[i][j], fill=k)
 
 		for i in range(len(self.coordonate_of_ants)):
+			if self.coordonate_of_ants[i][0] == [-1,-1]:
+				continue
 			self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
 
 		if self.coordonate_of_ants[0][1]:
 			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go either further or go back any further")
 
-
-		self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
+		if self._steps == 0 or self._steps == 1:
+			self._win_ant.title(f"Langton's ant simulation {indice} step {self._steps}")
+		else:
+			self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
 		self.actu_info()
 
 	def mouseClick(self,event):
@@ -148,6 +169,20 @@ class Simulator_steps():
 		self.actu_info()
 
 	def actu_info(self):
+		self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
 		number_of_ant, number_of_cell = self._game.info()
-		self.label_one.config(text = "Number of cell(s): " + str(number_of_cell))
-		self.label_two.config(text = "Number of ant(s): " + str(number_of_ant))
+
+		if number_of_cell == 0 or number_of_cell == 1:
+			self.label_one.config(text = "Number of cell: " + str(number_of_cell))
+		else:
+			self.label_one.config(text = "Number of cells: " + str(number_of_cell))
+		
+		if number_of_ant[1] == 0 or number_of_ant[1] == 1:
+			self.label_two.config(text = "Number of ant alive: " + str(number_of_ant[1]))
+		else:
+			self.label_two.config(text = "Number of ants alive: " + str(number_of_ant[1]))
+
+		if number_of_ant[0] == 0 or number_of_ant[0] == 1:
+			self.label_three.config(text = "Number of ant dead: " + str(number_of_ant[0]))
+		else:
+			self.label_three.config(text = "Number of ants dead: " + str(number_of_ant[0]))

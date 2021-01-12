@@ -33,6 +33,8 @@ class Parameters_wind(object):#Here y= row and x = column
 		self.dimension.set(value = 50)
 		self.chkValue = BooleanVar() 
 		self.chkValue.set(True)
+		self.chkValue_two = BooleanVar() 
+		self.chkValue_two.set(False)
 		self.nbr_of_ant = IntVar()
 		self.nbr_of_ant.set(value = 1)
 		self.speed_opts = ['0','1000','500','250','100','50','10','0']
@@ -87,6 +89,8 @@ class Parameters_wind(object):#Here y= row and x = column
 
 		self.chk = Checkbutton(self.main_tab, text='Grid', var=self.chkValue) 
 		self.chk.grid(column=0, row=9)
+		self.chk_two = Checkbutton(self.main_tab, text='Desctructive collision', var=self.chkValue_two) 
+		self.chk_two.grid(column=1, row=9)
 		self.button_simulator = Button(self.main_tab, text = "Go to simulation auto", command = self.simulation_ants)
 		self.button_simulator.grid(column = 0 , row = 10)
 		self.button_simulator_steps = Button(self.main_tab, text = "Go to simulation step by step", command = self.simulation_steps)
@@ -161,8 +165,9 @@ class Parameters_wind(object):#Here y= row and x = column
 		speed = int(self.speed.get())/1000
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
+		collision = self.chkValue_two.get()
 		if len(self._rules) > 0:
-			self._Game[self._indice] = Board_multiple_ants(self._rules, border, self._indice, row, column, percentage, number_of_ant, speed)
+			self._Game[self._indice] = Board_multiple_ants(collision, self._rules, border, self._indice, row, column, percentage, number_of_ant, speed)
 		else:
 			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
 
@@ -178,7 +183,8 @@ class Parameters_wind(object):#Here y= row and x = column
 		number_of_ant = self.nbr_of_ant.get()
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
+		collision = self.chkValue_two.get()
 		if len(self._rules) > 0:
-			self._Game[self._indice] = Simulator_steps(self._rules, self._indice, row, column, percentage, number_of_ant, border)
+			self._Game[self._indice] = Simulator_steps(collision, self._rules, self._indice, row, column, percentage, number_of_ant, border)
 		else:
 			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")

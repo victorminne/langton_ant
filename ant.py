@@ -5,6 +5,7 @@ class Ants():
 	color = ["white","black","blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
 	def __init__(self, row, column, rules):
+		self._live = True
 		min_row, min_column = round(0.4*row), round(0.4*column)
 		max_row, max_column = round(0.6*row), round(0.6*column)
 		self._coordonate = [random.randint(min_row,max_row),random.randint(min_column,max_column)]
@@ -67,6 +68,19 @@ class Ants():
 	def get_coordonate(self):
 		return [self._coordonate[0],self._coordonate[1]]
 
+	def alive(self):
+		return self._live
+
+	def dead(self, step):
+		self._live = False
+		self._step = step
+
+	def resucite(self,step):
+		if step == self._step:
+			self._live = not self._live
+			
+		return self._live
+
 	def __del__(self):
 		print("bye")
 
@@ -75,7 +89,9 @@ class New_Ants():
 	direction = ["N","E","S","W"]
 	color = ["white","black","blue","red","yellow","green","purple","pink","brown","cyan","indigo","orange"]
 
-	def __init__(self, row, column, rules):
+	def __init__(self, row, column, rules, step):
+		self._step = step
+		self._live = True
 		self._coordonate = [row,column]
 		self._orientation = 0
 		self._current_direction = self.direction[self._orientation]
@@ -135,6 +151,19 @@ class New_Ants():
 
 	def get_coordonate(self):
 		return [self._coordonate[0],self._coordonate[1]]
+
+	def alive(self):
+		return self._live
+
+	def dead(self, step):
+		self._live = False
+		self._step = step
+
+	def resucite(self,step):
+		if step == self._step:
+			self._live = not self._live
+			
+		return self._live
 
 	def __del__(self):
 		print("bye")
