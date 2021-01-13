@@ -117,11 +117,12 @@ class Simulator_steps():
 				continue
 			self._monCanvas.itemconfig(self._board[self.coordonate_of_ants[i][0][0]][self.coordonate_of_ants[i][0][1]], fill='grey')
 
-		if self.coordonate_of_ants[0][1]:
-			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go either further or go back any further")
-
+		if self.coordonate_of_ants[0][1][0]:
+			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go further")
+		elif self.coordonate_of_ants[0][1][1]:
+			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go back any further")
 		if self._steps == 0 or self._steps == 1:
-			self._win_ant.title(f"Langton's ant simulation {indice} step {self._steps}")
+			self._win_ant.title(f"Langton's ant simulation {self.indice} step {self._steps}")
 		else:
 			self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
 		self.actu_info()

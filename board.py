@@ -137,7 +137,7 @@ class Board_multiple_ants():#here x = row and y = column
 		if coordonate[0] + x >= self._row or coordonate[1] + y >= self._column:
 			self._test = False
 			return True
-		elif coordonate[0] + x <= 0 or coordonate[1] + y <= 0:
+		elif coordonate[0] + x < 0 or coordonate[1] + y < 0:
 			self._test = False
 			return True
 
@@ -154,6 +154,8 @@ class Board_steps():#here x = row and y = column
 		self._number_of_ant = number_of_ant
 		self._step = 0
 		self._testt = False
+		self._testta = False
+		self._testtb = False
 		self._test = True
 		self._row = row
 		self._column = column
@@ -183,12 +185,12 @@ class Board_steps():#here x = row and y = column
 			if not i.alive():
 				ants = []
 				ants.append([-1,-1])
-				ants.append(self._testt)
+				ants.append([self._testta,self._testtb])
 				coordonate_ants.append(ants)
 			else:
 				ants = []
 				ants.append(i.get_coordonate())
-				ants.append(self._testt)
+				ants.append([self._testta,self._testtb])
 				coordonate_ants.append(ants)
 
 		return self._board, coordonate_ants, self._step
@@ -196,15 +198,16 @@ class Board_steps():#here x = row and y = column
 
 	def play(self,steps):
 		for i in range(steps):
-			if self._testt == False:
+			if self._testta == False:
+				self._testtb = False
 				for i in self._ants:
 					if i.alive():
 						if self.move(i):
-							self._testt = True
+							self._testta = True
 					else:
 						if i.resucite(self._step+1):
 							if self.move(i):
-								self._testt = True
+								self._testta = True
 
 				if self._collision:
 					self.collisionf()
@@ -213,15 +216,16 @@ class Board_steps():#here x = row and y = column
 
 	def bplay(self,steps):
 		for i in range(steps):
-			if self._testt == False:
+			if self._testtb == False:
+				self._testta = False
 				for i in self._ants[::-1]:
 					if i.alive():
 						if self.bmove(i):
-							self._testt = True
+							self._testtb = True
 					else:
 						if i.resucite(self._step-1):
 							if self.bmove(i):
-								self._testt = True
+								self._testtb = True
 
 				if self._collision:
 					self.collisionf()
@@ -242,12 +246,13 @@ class Board_steps():#here x = row and y = column
 							break
 
 	def move(self, current_ant):
-		coordonate = current_ant.get_coordonate()	
+		coordonate = current_ant.get_coordonate()
 
 		self._board[coordonate[0]][coordonate[1]] = current_ant.change_direction(self._board[coordonate[0]][coordonate[1]])
 		
 		x, y = self.direction_to_number(current_ant.direction_take())
 		if self.condition(coordonate, x, y):
+			self._board[coordonate[0]][coordonate[1]] = current_ant.bchange_direction(self._board[coordonate[0]][coordonate[1]])
 			return True
 
 		current_ant.set_coordonate(coordonate[0] + x, coordonate[1] + y)
@@ -288,7 +293,7 @@ class Board_steps():#here x = row and y = column
 		if coordonate[0] + x >= self._row or coordonate[1] + y >= self._column:
 			self._test = False
 			return True
-		elif coordonate[0] + x <= 0 or coordonate[1] + y <= 0:
+		elif coordonate[0] + x < 0 or coordonate[1] + y < 0:
 			self._test = False
 			return True
 
