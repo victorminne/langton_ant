@@ -47,7 +47,7 @@ class Parameters_wind(object):#Here y= row and x = column
 
 	def main_page(self):
 
-		self.label_dimension = Label(self.main_tab, text = "How many row and column do you want ?")
+		self.label_dimension = Label(self.main_tab, text = "How many rows and columns do you want ?")
 		self.label_dimension.grid(column = 0, row = 0, sticky = 'w')
 		self.scale_dimension = Scale(self.main_tab, orient = 'horizontal', from_ = 25, to = 200, variable = self.dimension, tickinterval = 25, length = 200)
 		self.scale_dimension.grid(column = 0, row = 1, padx = 5, pady = 5)
