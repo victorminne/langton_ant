@@ -14,7 +14,7 @@ class Simulator_steps():
 		self._steps = 0
 		self.indice = indice
 		self._win_ant.title(f"Langton's ant simulation {indice} step {self._steps}")
-		self._win_ant.geometry("1000x800")
+		self._win_ant.geometry("1000x830")
 		self._win_ant.resizable(False, True)
 		self._screen_size = 800
 		self._game = Board_steps(collision, rules, row, col, percentage, number_of_ant)
