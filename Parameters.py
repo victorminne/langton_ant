@@ -153,10 +153,13 @@ class Parameters_wind(object):#Here y= row and x = column
 		self.label_rules.config(text = "Rules :" + str(self._rules))
 
 	def simulation_ants(self):
-		threading._start_new_thread(self.new_board,())
-		self._Game.append("")
-		time.sleep(0.2)
-		self._indice += 1
+		if len(self._rules) > 0:
+			threading._start_new_thread(self.new_board,())
+			self._Game.append("")
+			time.sleep(0.2)
+			self._indice += 1
+		else:
+			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
 
 	def new_board(self):
 		row = self.dimension.get()
@@ -166,16 +169,17 @@ class Parameters_wind(object):#Here y= row and x = column
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
 		collision = self.chkValue_two.get()
-		if len(self._rules) > 0:
-			self._Game[self._indice] = Board_multiple_ants(collision, self._rules, border, self._indice, row, column, percentage, number_of_ant, speed)
-		else:
-			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
+		self._Game[self._indice] = Board_multiple_ants(collision, self._rules, border, self._indice, row, column, percentage, number_of_ant, speed)
+		
 
 	def simulation_steps(self):
-		threading._start_new_thread(self.new_board_steps,())
-		self._Game.append("")
-		time.sleep(0.2)
-		self._indice += 1
+		if len(self._rules) > 0:
+			threading._start_new_thread(self.new_board_steps,())
+			self._Game.append("")
+			time.sleep(0.2)
+			self._indice += 1
+		else:
+			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
 
 	def new_board_steps(self):
 		row = self.dimension.get()
@@ -184,7 +188,5 @@ class Parameters_wind(object):#Here y= row and x = column
 		percentage = self.black_case_nbr.get()
 		border = self.chkValue.get()
 		collision = self.chkValue_two.get()
-		if len(self._rules) > 0:
-			self._Game[self._indice] = Simulator_steps(collision, self._rules, self._indice, row, column, percentage, number_of_ant, border)
-		else:
-			messagebox.showwarning("Warning", "The Rules are incorrect, please complete it")
+		self._Game[self._indice] = Simulator_steps(collision, self._rules, self._indice, row, column, percentage, number_of_ant, border)
+		

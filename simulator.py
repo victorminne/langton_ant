@@ -38,7 +38,7 @@ class Simulation_wind():
 		self._monCanvas.itemconfig(self._board[y][x], fill=color)
 
 	def refresh(self, indice, step):
-		if self._steps == 0 or self._steps == 1:
+		if self._steps == 0 or self._steps == 1 or self._steps == -1:
 			self._win_ant.title(f"Langton's ant simulation {indice} step {step}")
 		else:
 			self._win_ant.title(f"Langton's ant simulation {indice} steps {step}")

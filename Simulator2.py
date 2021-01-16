@@ -121,7 +121,7 @@ class Simulator_steps():
 			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go further")
 		elif self.coordonate_of_ants[0][1][1]:
 			messagebox.showinfo("Info", "An ant want to go out, that's why the simulation cannot go back any further")
-		if self._steps == 0 or self._steps == 1:
+		if self._steps == 0 or self._steps == 1 or self._steps == -1:
 			self._win_ant.title(f"Langton's ant simulation {self.indice} step {self._steps}")
 		else:
 			self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
@@ -170,7 +170,10 @@ class Simulator_steps():
 		self.actu_info()
 
 	def actu_info(self):
-		self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
+		if self._steps == 0 or self._steps == 1 or self._steps == -1:
+			self._win_ant.title(f"Langton's ant simulation {self.indice} step {self._steps}")
+		else:
+			self._win_ant.title(f"Langton's ant simulation {self.indice} steps {self._steps}")
 		number_of_ant, number_of_cell = self._game.info()
 
 		if number_of_cell == 0 or number_of_cell == 1:
